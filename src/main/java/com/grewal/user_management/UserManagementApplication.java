@@ -11,16 +11,16 @@ public class UserManagementApplication {
 
         // uncomment this env for personal use.
 
-//        Dotenv dotenv = Dotenv.configure()
-//                .ignoreIfMalformed()
-//                .ignoreIfMissing()
-//                .load();
-//
-//        dotenv.entries().forEach(e -> {
-//            if (System.getProperty(e.getKey()) == null && System.getenv(e.getKey()) == null) {
-//                System.setProperty(e.getKey(), e.getValue());
-//            }
-//        });
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMalformed()
+                .ignoreIfMissing()
+                .load();
+
+        dotenv.entries().forEach(e -> {
+            if (System.getProperty(e.getKey()) == null && System.getenv(e.getKey()) == null) {
+                System.setProperty(e.getKey(), e.getValue());
+            }
+        });
 
         SpringApplication.run(UserManagementApplication.class, args);
 
