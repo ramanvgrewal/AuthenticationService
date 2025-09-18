@@ -37,6 +37,11 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Password reset fields
+    @Column(length = 10)
+    private String resetOtp;
+    private LocalDateTime resetOtpExpiry;
+
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private StudentProfile studentProfile;
 

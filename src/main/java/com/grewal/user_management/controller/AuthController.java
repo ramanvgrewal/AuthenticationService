@@ -1,15 +1,11 @@
 package com.grewal.user_management.controller;
 
-import com.grewal.user_management.dto.LoginRequestDTO;
-import com.grewal.user_management.dto.LoginResponseDTO;
-import com.grewal.user_management.dto.RegisterRequestDTO;
-import com.grewal.user_management.dto.UserDTO;
+import com.grewal.user_management.dto.*;
 import com.grewal.user_management.model.User;
 import com.grewal.user_management.repository.UserRepository;
 import com.grewal.user_management.service.AuthenticationService;
-
+import com.grewal.user_management.service.PasswordResetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final PasswordResetService passwordResetService;
 
     private final UserRepository userRepository;
 
@@ -42,6 +39,27 @@ public class AuthController {
     public ResponseEntity<String> logout() {
         return authenticationService.logout();
     }
+
+    // Forgot password flow
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequestDTO request) {
+        String msg = passwordResetService.requestOtp(request);
+        return ResponseEntity.ok(msg);
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequestDTO request) {
+        boolean valid = passwordResetService.verifyOtp(request);
+        if (valid) return ResponseEntity.ok("OTP verified");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequestDTO request) {
+        String msg = passwordResetService.resetPassword(request);
+        return ResponseEntity.ok(msg);
+    }
+
     @GetMapping("/get_current_user")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         if(authentication == null) {
